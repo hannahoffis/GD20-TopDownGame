@@ -11,9 +11,17 @@ public class CarController : MonoBehaviour
 
     public GameObject driver;
 
+    private bool IsEmpty => driver == null;
+
     // Methods describe what a class CAN DO
     void Update()
     {
+        if (this.IsEmpty)
+        {
+            return;
+        }
+            
+
         PlayerInput playerInput = driver.GetComponent<PlayerInput>();
         
         bool forward = Input.GetKey(playerInput.forwardKey);
@@ -50,15 +58,31 @@ public class CarController : MonoBehaviour
 
         if (exit)
         {
-            driver.transform.position = this.transform.position;
-            driver.SetActive(true);
-            this.enabled = false;
-            driver = null;
+            Exit();
         }
         // Pseudo-Code:
         // if (exit)
         // set the driver's position to our own position
         // activate the driver
         // disable ourselves (this script)
+    }
+
+    private void Exit()
+    {
+        driver.transform.position = this.transform.position;
+        driver.SetActive(true);
+
+        driver = null;
+    }
+
+    public void Enter(GameObject driver)
+    {
+        if (!this.IsEmpty)
+        {
+            Exit();
+        }
+        this.driver = driver;
+        // And disable this' (the Human's) game object
+        driver.SetActive(false);
     }
 }
